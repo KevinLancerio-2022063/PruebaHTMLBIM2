@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Objetivo Meditación</title>
+    <link rel="stylesheet" th:href="@{/css/baseLancerio.css}">
+</head>
+
+<body>
+
+<div class="usuario-container">
+
+    <!-- Encabezado con el texto "Objetivos de Meditación" -->
+    <h1>
+        Objetivos de <span style="color: var(--verde-menta);">Meditación</span>
+    </h1>
+
+    <!-- Este es la opcion para buscar por ID los Objetivos -->
+    <div class="toolbar">
+
+        <div class="search-wrap">
+            <input type="text"
+                   id="buscar"
+                   class="search-input"
+                   placeholder="Buscar objetivo..."
+                   onkeyup="filtrarTabla()">
+        </div>
+
+        <!-- Con esto, al darle el botón te mandara a la "vista" que permitira ingresar los datos para agregar el Objetivo -->
+        <button class="btn"
+                onclick="window.location.href='/objetivoMeditacion'">
+            + Nuevo objetivo
+        </button>
+
+    </div>
+
+    <!-- Tabla donde se muestran los objetivos -->
+    <div class="table-wrap">
+        <table class="usuario-table" id="tablaObjetivos">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tiempo</th>
+                <th>Días</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="o : ${objetivos}">
+
+                <td th:text="${o.id_objetivo_meditacion}"></td>
+                <td th:text="${o.tiempo_objetivo}"></td>
+                <td th:text="${o.dias_objetivo}"></td>
+                <td th:text="${o.fk_id_usuario}"></td>
+
+                <td>
+                    <div class="td-actions-inner">
+
+                        <a class="action-btn"
+                           th:href="@{/objetivoMeditacion/editar/{id}(id=${o.id_objetivo_meditacion})}">
+                            ✏️
+                        </a>
+
+                        <a class="action-btn"
+                           th:href="@{/objetivoMeditacion/eliminar/{id}(id=${o.id_objetivo_meditacion})}"
+                           onclick="return confirm('¿Eliminar objetivo?')">
+                            🗑️
+                        </a>
+
+                    </div>
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(objetivos)}">
+                <td colspan="5">No hay objetivos registrados</td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- formulario para ingresar los datos de los Objetivos -->
+    <div id="formulario" style="margin-top:3rem; max-width:500px;">
+
+        <h2 th:text="${objetivo.id_objetivo_meditacion != null} ? 'Editar Objetivo' : 'Nuevo Objetivo'"></h2>
+
+        <form th:action="@{/objetivoMeditacion/guardar}"
+              th:object="${objetivo}"
+              method="post"
+              style="display:grid; gap:1rem;">
+
+            <input type="hidden" th:field="*{id_objetivo_meditacion}">
+
+            <input type="number"
+                   th:field="*{tiempo_objetivo}"
+                   placeholder="Tiempo objetivo"
+                   required>
+
+            <input type="number"
+                   th:field="*{dias_objetivo}"
+                   placeholder="Días objetivo"
+                   min="1"
+                   required>
+
+            <input type="number"
+                   th:field="*{fk_id_usuario}"
+                   placeholder="ID Usuario"
+                   min="1"
+                   required>
+
+            <button type="submit" class="btn">
+                <span th:text="${objetivo.id_objetivo_meditacion != null} ? 'Actualizar' : 'Guardar'"></span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Buscador del Objetivo Meditación por Id -->
+<script
+    th:src="@{/js/buscadorObjetivoMeditacion.js}">
+</script>
+
+</body>
+</html>

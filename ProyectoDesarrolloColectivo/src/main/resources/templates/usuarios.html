@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios</title>
+    <link rel="stylesheet" th:href="@{/css/baseLancerio.css}">
+</head>
+
+<body>
+
+<div class="usuario-container">
+
+    <!-- Encabezado con el texto: "Gestión de Usuarios" -->
+    <h1>
+        Gestión de <span style="color: var(--verde-menta);">Usuarios</span>
+    </h1>
+
+    <!-- Barra del buscador por Id de Usuario -->
+    <div class="toolbar">
+
+        <div class="search-wrap">
+            <input type="text"
+                   id="buscar"
+                   class="search-input"
+                   placeholder="Buscar usuario..."
+                   onkeyup="filtrarTabla()">
+        </div>
+
+        <!-- Al darle al botón Nuevo Usuario cambia a la "vista" Registrar Usuario -->
+        <button class="btn"
+                onclick="window.location.href='/usuarios'">
+            + Nuevo usuario
+        </button>
+
+    </div>
+
+    <!-- Tabla donde se muestran los registros de los Usuario -->
+    <div class="table-wrap">
+        <table class="usuario-table" id="tablaUsuarios">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="u : ${usuarios}">
+
+                <td th:text="${u.id_usuario}"></td>
+                <td th:text="${u.nombre_completo}"></td>
+                <td th:text="${u.correoUsuario}"></td>
+
+                <!-- Protección de las contraseñas para que no se vean-->
+                <td>
+                    <span class="stat-badge">****</span>
+                </td>
+
+                <td>
+                    <div class="td-actions-inner">
+
+                        <a class="action-btn"
+                           th:href="@{/usuarios/editar/{id}(id=${u.id_usuario})}">
+                            ✏️
+                        </a>
+
+                        <a class="action-btn"
+                           th:href="@{/usuarios/eliminar/{id}(id=${u.id_usuario})}"
+                           onclick="return confirm('¿Eliminar usuario?')">
+                            🗑️
+                        </a>
+
+                    </div>
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(usuarios)}">
+                <td colspan="5">No hay usuarios registrados</td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- Formulario para registrar un Usuario -->
+    <div id="formulario" style="margin-top:3rem; max-width:500px;">
+
+        <h2 th:text="${usuario.id_usuario != null} ? 'Editar Usuario' : 'Nuevo Usuario'"></h2>
+
+        <form th:action="@{/usuarios/guardar}"
+              th:object="${usuario}"
+              method="post"
+              style="display:grid; gap:1rem;">
+
+            <input type="hidden" th:field="*{id_usuario}">
+
+            <input type="text"
+                   th:field="*{nombre_completo}"
+                   placeholder="Nombre completo"
+                   required>
+
+            <input type="email"
+                   th:field="*{correoUsuario}"
+                   placeholder="Correo electrónico"
+                   required>
+
+            <input type="password"
+                   th:field="*{contraseña}"
+                   placeholder="Contraseña"
+                   required>
+
+            <button type="submit" class="btn">
+                <span th:text="${usuario.id_usuario != null} ? 'Actualizar' : 'Guardar'"></span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- dirección del buscador por Id de Usuario -->
+<script
+        th:src="@{/js/buscadorUsuario.js}">
+</script>
+
+</body>
+</html>

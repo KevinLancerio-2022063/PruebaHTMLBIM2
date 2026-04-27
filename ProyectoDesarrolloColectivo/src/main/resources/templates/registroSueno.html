@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Sueño</title>
+    <link rel="stylesheet" th:href="@{/css/baseLancerio.css}">
+</head>
+
+<body>
+
+<div class="usuario-container">
+
+    <!-- Encabezado para el texto "Registro Sueño" -->
+    <h1>
+        Registro de <span style="color: var(--verde-menta);">Sueño</span>
+    </h1>
+
+    <!-- Bara del buscador para ver los registros por Id -->
+    <div class="toolbar">
+
+        <div class="search-wrap">
+            <input type="text"
+                   id="buscar"
+                   class="search-input"
+                   placeholder="Buscar registro..."
+                   onkeyup="filtrarTabla()">
+        </div>
+
+        <button class="btn"
+                onclick="window.location.href='/registroSueno'">
+            + Nuevo registro
+        </button>
+
+    </div>
+
+    <!-- Tabla para ver los demás registros del sueño -->
+    <div class="table-wrap">
+        <table class="usuario-table" id="tablaRegistros">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Horas</th>
+                <th>Calidad</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="r : ${registros}">
+
+                <td th:text="${r.id_registro_sueño}"></td>
+                <td th:text="${r.fecha_sueño}"></td>
+                <td th:text="${r.horas_dormidas}"></td>
+                <td th:text="${r.calidad_sueño}"></td>
+                <td th:text="${r.fk_id_usuario}"></td>
+
+                <td>
+                    <div class="td-actions-inner">
+
+                        <a class="action-btn"
+                           th:href="@{/registroSueno/editar/{id}(id=${r.id_registro_sueño})}">
+                            ✏️
+                        </a>
+
+                        <a class="action-btn"
+                           th:href="@{/registroSueno/eliminar/{id}(id=${r.id_registro_sueño})}"
+                           onclick="return confirm('¿Eliminar registro?')">
+                            🗑️
+                        </a>
+
+                    </div>
+                </td>
+
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(registros)}">
+                <td colspan="6">No hay registros de sueño</td>
+            </tr>
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <!-- Formulario para ingresar un nuevo registro de sueño -->
+    <div id="formulario" style="margin-top:3rem; max-width:500px;">
+
+        <h2 th:text="${registro.id_registro_sueño != null} ? 'Editar Registro' : 'Nuevo Registro'"></h2>
+
+        <form th:action="@{/registroSueno/guardar}"
+              th:object="${registro}"
+              method="post"
+              style="display:grid; gap:1rem;">
+
+            <input type="hidden" th:field="*{id_registro_sueño}">
+
+            <input type="date"
+                   th:field="*{fecha_sueño}"
+                   required>
+
+            <input type="number"
+                   min="1"
+                   max="15"
+                   th:field="*{horas_dormidas}"
+                   placeholder="Horas dormidas"
+                   required>
+
+            <input type="text"
+                   th:field="*{calidad_sueño}"
+                   placeholder="Calidad del sueño"
+                   maxlength="100"
+                   required>
+
+            <input type="number"
+                   th:field="*{fk_id_usuario}"
+                   placeholder="ID Usuario"
+                   min="1"
+                   required>
+
+            <button type="submit" class="btn">
+                <span th:text="${registro.id_registro_sueño != null} ? 'Actualizar' : 'Guardar'"></span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Dirección del buscador de Id para el Registro Sueño -->
+<script
+    th:src="@{/js/buscadorRegistroSueno.js}">
+</script>
+
+</body>
+</html>
