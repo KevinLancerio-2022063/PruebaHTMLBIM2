@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Racha de Lectura</title>
+    <link rel="stylesheet"
+          th:href="@{/css/rachas.css}"
+          href="../static/css/rachas.css">
+</head>
+<body>
+
+<header class="barra">Racha de Lectura</header>
+
+<main class="wrap">
+
+    <section class="card">
+        <h2 class="h2">Agregar racha</h2>
+
+        <p th:if="${error}" style="color:red;" th:text="${error}"></p>
+
+        <form th:action="@{/rachaLectura}" method="post">
+            <div class="form-group">
+                <div class="input-box">
+                    <label for="fecha">Fecha</label>
+                    <input id="fecha"
+                           name="fechaRacha"
+                           type="date"
+                           required>
+                </div>
+            </div>
+
+            <div class="acciones">
+                <button type="submit" class="btn">Guardar</button>
+                <button type="reset" class="btn sec">Limpiar</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <h2 class="h2">Historial</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Días consecutivos</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:if="${rachas == null or #lists.isEmpty(rachas)}">
+                <td colspan="3" style="text-align:center;">
+                    No hay rachas registradas
+                </td>
+            </tr>
+
+            <tr th:each="r : ${rachas}">
+                <td th:text="${r.idRachaLectura}"></td>
+                <td th:text="${r.fecha}"></td>
+                <td th:text="${r.diasConsecutivos}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <p class="foot">Proyecto Desarrollo Personal</p>
+</main>
+
+</body>
+</html>

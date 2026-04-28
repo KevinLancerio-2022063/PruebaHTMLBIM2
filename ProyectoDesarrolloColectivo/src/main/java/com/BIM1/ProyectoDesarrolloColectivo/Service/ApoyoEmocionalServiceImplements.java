@@ -1,7 +1,6 @@
 package com.BIM1.ProyectoDesarrolloColectivo.Service;
 
 import com.BIM1.ProyectoDesarrolloColectivo.Entity.ApoyoEmocional;
-import com.BIM1.ProyectoDesarrolloColectivo.Entity.FraseMotivadora;
 import com.BIM1.ProyectoDesarrolloColectivo.Repository.ApoyoEmocionalRepository;
 import com.BIM1.ProyectoDesarrolloColectivo.Validator.ApoyoEmocionalValidator;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class ApoyoEmocionalServiceImplements implements ApoyoEmocionalService{
     }
 
     @Override
-    public List<ApoyoEmocional> getAllFraseMotivadora() {
+    public List<ApoyoEmocional> getAllApoyoEmovional() {
         return apoyoEmocionalRepository.findAll();
     }
 
@@ -29,20 +28,20 @@ public class ApoyoEmocionalServiceImplements implements ApoyoEmocionalService{
     }
 
     @Override
-    public ApoyoEmocional saveFraseMotivadora(ApoyoEmocional apoyoEmocional) throws RuntimeException {
+    public ApoyoEmocional saveApoyoEmocional(ApoyoEmocional apoyoEmocional) throws RuntimeException {
         apoyoEmocionalValidator.ApoyoEmocionalValidacion(apoyoEmocional);
         return apoyoEmocionalRepository.save(apoyoEmocional);
     }
 
     @Override
-    public ApoyoEmocional updateFraseMotivadora(Integer id, ApoyoEmocional apoyoEmocional) {
+    public ApoyoEmocional updateApoyoEmocional(Integer id, ApoyoEmocional apoyoEmocional) {
         apoyoEmocionalValidator.ApoyoEmocionalValidacion(apoyoEmocional);
         apoyoEmocionalValidator.ApoyoEmocionalValidacionId(id);
         return apoyoEmocionalRepository.save(apoyoEmocional);
     }
 
     @Override
-    public void deleteFraseMotivadora(Integer id) {
+    public void deleteApoyoEmocional(Integer id) {
         apoyoEmocionalValidator.ApoyoEmocionalValidacionId(id);
         apoyoEmocionalRepository.deleteById(id);
     }

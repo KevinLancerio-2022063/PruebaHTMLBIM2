@@ -4,41 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <title>Usuarios</title>
-    <link rel="stylesheet" th:href="@{/css/baseLancerio.css}">
+    <link rel="stylesheet" th:href="@{/css/usuarios.css}">
 </head>
 
 <body>
+<nav>
+    <a th:href="@{/index}" class="nav-logo">Evoluciona</a>
+    <ul class="nav-links">
+        <li><a th:href="@{/index}">Inicio</a></li>
+    </ul>
+</nav>
 
 <div class="usuario-container">
 
-    <!-- Encabezado con el texto: "Gestión de Usuarios" -->
-    <h1>
-        Gestión de <span style="color: var(--verde-menta);">Usuarios</span>
-    </h1>
+    <!-- ENCABEZADO -->
+    <div class="page-header" style="padding: 0 0 2.5rem;">
+        <div>
+            <p class="page-tag">Administración</p>
+            <h1 class="page-title">Gestión de <em>Usuarios</em></h1>
+        </div>
+    </div>
 
-    <!-- Barra del buscador por Id de Usuario -->
+    <!-- STATS -->
+    <div class="stats-pills">
+        <div class="stat-pill">
+            <div class="stat-pill-icon pill-verde">👤</div>
+            <div>
+                <div class="stat-pill-label">Total usuarios</div>
+                <div class="stat-pill-num"
+                     th:text="${#lists.size(usuarios)}">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-pill-icon pill-cafe">✅</div>
+            <div>
+                <div class="stat-pill-label">Activos</div>
+                <div class="stat-pill-num"
+                     th:text="${#lists.size(usuarios)}">0</div>
+            </div>
+        </div>
+        <div class="stat-pill">
+            <div class="stat-pill-icon pill-crema">⏳</div>
+            <div>
+                <div class="stat-pill-label">Pendientes</div>
+                <div class="stat-pill-num">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOLBAR -->
     <div class="toolbar">
-
         <div class="search-wrap">
+            <span class="search-icon">🔍</span>
             <input type="text"
                    id="buscar"
                    class="search-input"
                    placeholder="Buscar usuario..."
                    onkeyup="filtrarTabla()">
         </div>
-
-        <!-- Al darle al botón Nuevo Usuario cambia a la "vista" Registrar Usuario -->
-        <button class="btn"
+        <button class="btn-primary"
                 onclick="window.location.href='/usuarios'">
-            + Nuevo usuario
+            ＋ Nuevo usuario
         </button>
-
     </div>
 
-    <!-- Tabla donde se muestran los registros de los Usuario -->
+    <!-- TABLA -->
     <div class="table-wrap">
         <table class="usuario-table" id="tablaUsuarios">
-
             <thead>
             <tr>
                 <th>ID</th>
@@ -48,89 +80,129 @@
                 <th>Acciones</th>
             </tr>
             </thead>
-
             <tbody>
 
             <tr th:each="u : ${usuarios}">
-
-                <td th:text="${u.id_usuario}"></td>
-                <td th:text="${u.nombre_completo}"></td>
-                <td th:text="${u.correoUsuario}"></td>
-
-                <!-- Protección de las contraseñas para que no se vean-->
                 <td>
-                    <span class="stat-badge">****</span>
+                    <span class="id-badge"
+                          th:text="'#' + ${u.id_usuario}">
+                    </span>
                 </td>
-
                 <td>
-                    <div class="td-actions-inner">
-
-                        <a class="action-btn"
-                           th:href="@{/usuarios/editar/{id}(id=${u.id_usuario})}">
-                            ✏️
-                        </a>
-
-                        <a class="action-btn"
-                           th:href="@{/usuarios/eliminar/{id}(id=${u.id_usuario})}"
-                           onclick="return confirm('¿Eliminar usuario?')">
-                            🗑️
-                        </a>
-
+                    <div class="td-nombre">
+                        <div class="usuario-avatar"
+                             th:text="${#strings.toUpperCase(
+                               #strings.substring(u.nombre_completo, 0, 2))}">
+                        </div>
+                        <span th:text="${u.nombre_completo}"></span>
                     </div>
                 </td>
-
+                <td>
+                    <span class="correo-text"
+                          th:text="${u.correoUsuario}">
+                    </span>
+                </td>
+                <td>
+                    <span class="pass-badge">••••••••</span>
+                </td>
+                <td>
+                    <div class="td-actions-inner">
+                        <a class="btn-icon btn-edit"
+                           th:href="@{/usuarios/editar/{id}(id=${u.id_usuario})}"
+                           title="Editar">✏️</a>
+                        <a class="btn-icon btn-delete"
+                           th:href="@{/usuarios/eliminar/{id}(id=${u.id_usuario})}"
+                           onclick="return confirm('¿Eliminar usuario?')"
+                           title="Eliminar">🗑️</a>
+                    </div>
+                </td>
             </tr>
 
-            <tr th:if="${#lists.isEmpty(usuarios)}">
-                <td colspan="5">No hay usuarios registrados</td>
+            <tr th:if="${#lists.isEmpty(usuarios)}" class="empty-row">
+                <td colspan="5">
+                    <div class="empty-state">
+                        <div class="empty-icon">👥</div>
+                        <p class="empty-text">No hay usuarios registrados</p>
+                    </div>
+                </td>
             </tr>
 
             </tbody>
-
         </table>
     </div>
 
-    <!-- Formulario para registrar un Usuario -->
-    <div id="formulario" style="margin-top:3rem; max-width:500px;">
+    <!-- FORMULARIO -->
+    <div class="form-section-wrap">
+        <div class="form-section">
 
-        <h2 th:text="${usuario.id_usuario != null} ? 'Editar Usuario' : 'Nuevo Usuario'"></h2>
+            <div class="form-section-header">
+                <h2 class="form-section-title">
+                    <span th:if="${usuario.id_usuario != null}">
+                        Editar <em>usuario</em>
+                    </span>
+                    <span th:if="${usuario.id_usuario == null}">
+                        Nuevo <em>usuario</em>
+                    </span>
+                </h2>
+                <p class="form-section-sub">
+                    Completa los campos para registrar o actualizar
+                    un usuario en el sistema.
+                </p>
+            </div>
 
-        <form th:action="@{/usuarios/guardar}"
-              th:object="${usuario}"
-              method="post"
-              style="display:grid; gap:1rem;">
+            <form th:action="@{/usuarios/guardar}"
+                  th:object="${usuario}"
+                  method="post">
 
-            <input type="hidden" th:field="*{id_usuario}">
+                <input type="hidden" th:field="*{id_usuario}">
 
-            <input type="text"
-                   th:field="*{nombre_completo}"
-                   placeholder="Nombre completo"
-                   required>
+                <div class="form-group">
+                    <label class="form-label">Nombre completo</label>
+                    <input type="text"
+                           class="form-input"
+                           th:field="*{nombre_completo}"
+                           placeholder="Ej. María González"
+                           required>
+                </div>
 
-            <input type="email"
-                   th:field="*{correoUsuario}"
-                   placeholder="Correo electrónico"
-                   required>
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico</label>
+                    <input type="email"
+                           class="form-input"
+                           th:field="*{correoUsuario}"
+                           placeholder="usuario@correo.com"
+                           required>
+                </div>
 
-            <input type="password"
-                   th:field="*{contraseña}"
-                   placeholder="Contraseña"
-                   required>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password"
+                           class="form-input"
+                           th:field="*{contraseña}"
+                           placeholder="••••••••"
+                           required>
+                </div>
 
-            <button type="submit" class="btn">
-                <span th:text="${usuario.id_usuario != null} ? 'Actualizar' : 'Guardar'"></span>
-            </button>
+                <div class="form-actions">
+                    <button type="button"
+                            class="btn-secondary"
+                            onclick="window.location.href='/usuarios'">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span th:text="${usuario.id_usuario != null}
+                              ? 'Actualizar' : 'Guardar'">
+                        </span>
+                    </button>
+                </div>
 
-        </form>
-
+            </form>
+        </div>
     </div>
 
 </div>
 
-<!-- dirección del buscador por Id de Usuario -->
-<script
-        th:src="@{/js/buscadorUsuario.js}">
-</script>
+<script th:src="@{/js/buscadorUsuario.js}"></script>
 
 </body>
 </html>
