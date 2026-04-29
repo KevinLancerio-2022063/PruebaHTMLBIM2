@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ejercicios</title>
+    <link rel="stylesheet" th:href="@{/Base.css}">
+    <link rel="stylesheet" th:href="@{/Ejercicio.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+<nav>
+    <a th:href="@{/index}" class="nav-logo">Evoluciona</a>
+    <ul class="nav-links">
+        <li><a th:href="@{/index}">Inicio</a></li>
+    </ul>
+</nav>
+
+<div th:if="${exito}" class="alerta" th:text="${exito}"></div>
+
+<div class="page-header">
+    <div class="page-header-left">
+        <div class="page-tag">Tu entrenamiento</div>
+        <h1 class="page-title">Mis <em>Ejercicios</em></h1>
+    </div>
+    <a th:href="@{/ejercicios}" class="btn-primary">＋ Nuevo ejercicio</a>
+</div>
+
+<div class="ejercicios-container">
+
+    <div class="toolbar">
+        <form th:action="@{/ejercicios/buscarEjercicio}" method="get" class="search-form">
+            <div class="search-wrap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="number" name="id" class="search-input" placeholder="Buscar por ID..."/>
+            </div>
+            <button type="submit" class="btn-primary">Buscar</button>
+        </form>
+        <span class="contador"
+              th:text="${ejercicios != null ? #lists.size(ejercicios) : 0} + ' ejercicio(s)'">0 ejercicio(s)</span>
+    </div>
+
+    <div class="ejercicios-grid">
+
+        <div class="ej-card"
+             th:each="ej : ${ejercicios != null ? ejercicios : T(java.util.Collections).emptyList()}">
+
+            <input type="checkbox"
+                   th:id="'flip-ej-' + ${ej.id_ejercicio}"
+                   class="ej-flip-check"/>
+
+            <div class="ej-front">
+
+                <div class="ej-card-header">
+                    <div>
+                        <div class="ej-id" th:text="'# ' + ${ej.id_ejercicio}">ID</div>
+                        <div class="ej-nombre" th:text="${ej.nombre_ejercicio}">Nombre</div>
+                        <span class="ej-rutina-badge" th:text="'Rutina #' + ${ej.fk_id_rutina}">Rutina</span>
+                    </div>
+                    <div class="ej-card-actions">
+                        <label th:for="'flip-ej-' + ${ej.id_ejercicio}"
+                               class="ej-btn-flip" title="Ver detalle de rutina">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </label>
+                        <a th:href="@{'/ejercicios/editarEjercicio' + ${ej.id_ejercicio}}"
+                           class="ej-btn-edit" title="Editar">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form th:action="@{/ejercicios/eliminarEjercicio/{id}(id=${ej.id_ejercicio})}"
+                              method="post" style="display:inline;">
+                            <button type="submit" class="ej-btn-delete" title="Eliminar">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="ej-stats">
+                    <div class="ej-stat">
+                        <div class="ej-stat-num" th:text="${ej.series_ejercicio}">0</div>
+                        <div class="ej-stat-label">SERIES</div>
+                    </div>
+                    <div class="ej-stat-divider"></div>
+                    <div class="ej-stat">
+                        <div class="ej-stat-num" th:text="${ej.repeticiones_ejercicio}">0</div>
+                        <div class="ej-stat-label">REPS</div>
+                    </div>
+                    <div class="ej-stat-divider"></div>
+                    <div class="ej-stat">
+                        <div class="ej-stat-num" th:text="${ej.tiempo_ejercicio}">0</div>
+                        <div class="ej-stat-label">SEG</div>
+                    </div>
+                    <div class="ej-stat-divider"></div>
+                    <div class="ej-stat">
+                        <div class="ej-stat-num" th:text="${ej.descanso_ejercicio}">0</div>
+                        <div class="ej-stat-label">DESC.</div>
+                    </div>
+                </div>
+
+                <div class="ej-barras">
+                    <div class="ej-barra"></div>
+                    <div class="ej-barra"></div>
+                    <div class="ej-barra ej-barra-dim"></div>
+                    <div class="ej-barra ej-barra-dim"></div>
+                </div>
+
+            </div>
+
+            <div class="ej-back">
+
+                <div class="ej-back-header">
+                    <div>
+                        <div class="ej-back-eyebrow">Rutina asignada</div>
+
+                        <div class="ej-back-rutina-nombre">
+                            <span th:each="r : ${rutina != null ? rutina : T(java.util.Collections).emptyList()}"
+                                  th:if="${r.id_rutina == ej.fk_id_rutina}"
+                                  th:text="${r.nombre_rutina}">—</span>
+                            <span th:if="${rutina == null or #lists.isEmpty(rutina)}"
+                                  th:text="'Rutina #' + ${ej.fk_id_rutina}">—</span>
+                        </div>
+                    </div>
+                    <label th:for="'flip-ej-' + ${ej.id_ejercicio}"
+                           class="ej-btn-close" title="Cerrar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M18 6 6 18M6 6l12 12"/>
+                        </svg>
+                    </label>
+                </div>
+
+                <div class="ej-back-dias-wrap">
+                    <div class="ej-back-section-label">Días de entrenamiento</div>
+                    <div class="ej-back-dias">
+                        <span th:each="r : ${rutina != null ? rutina : T(java.util.Collections).emptyList()}"
+                              th:if="${r.id_rutina == ej.fk_id_rutina}">
+                            <span class="ej-dia-chip"
+                                  th:each="dia : ${#strings.arraySplit(r.dias_semana, ',')}"
+                                  th:text="${#strings.trim(dia)}">Lunes</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ej-back-section-label" style="margin-bottom:0.5rem;">Detalles del ejercicio</div>
+                <div class="ej-back-stats">
+                    <div class="ej-back-stat">
+                        <div class="ej-back-stat-num" th:text="${ej.series_ejercicio}">0</div>
+                        <div class="ej-back-stat-lbl">Series</div>
+                    </div>
+                    <div class="ej-back-stat">
+                        <div class="ej-back-stat-num" th:text="${ej.repeticiones_ejercicio}">0</div>
+                        <div class="ej-back-stat-lbl">Reps</div>
+                    </div>
+                    <div class="ej-back-stat">
+                        <div class="ej-back-stat-num" th:text="${ej.tiempo_ejercicio} + 's'">0s</div>
+                        <div class="ej-back-stat-lbl">Tiempo</div>
+                    </div>
+                    <div class="ej-back-stat">
+                        <div class="ej-back-stat-num" th:text="${ej.descanso_ejercicio} + 's'">0s</div>
+                        <div class="ej-back-stat-lbl">Descanso</div>
+                    </div>
+                </div>
+
+                <div class="ej-back-footer">
+                    <label th:for="'flip-ej-' + ${ej.id_ejercicio}"
+                           class="ej-btn-volver">← Volver</label>
+                    <a th:href="@{'/ejercicios/editarEjercicio' + ${ej.id_ejercicio}}"
+                       class="ej-btn-edit-back">Editar ejercicio</a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="empty-state" th:if="${ejercicios == null or #lists.isEmpty(ejercicios)}">
+            <div class="empty-icon">🏋️</div>
+            <p class="empty-text">No hay ejercicios registrados todavía.</p>
+        </div>
+
+    </div>
+</div>
+
+<div class="form-section-wrap">
+    <div class="form-section">
+
+        <div class="form-section-header">
+            <h2 class="form-section-title">
+                <span th:if="${ejerciciosFormu.id_ejercicio != null}">Editar <em>Ejercicio</em></span>
+                <span th:unless="${ejerciciosFormu.id_ejercicio != null}">Nuevo <em>Ejercicio</em></span>
+            </h2>
+            <p class="form-section-sub">Completa los campos para registrar el ejercicio en tu rutina.</p>
+        </div>
+
+        <form th:object="${ejerciciosFormu}"
+              th:action="${ejerciciosFormu.id_ejercicio != null
+                          ? '/ejercicios/actualizarEjercicio/' + ejerciciosFormu.id_ejercicio
+                          : '/ejercicios/guardarEjercicio'}"
+              method="post">
+
+            <input type="hidden" th:field="*{id_ejercicio}"/>
+
+            <div class="form-group">
+                <label class="form-label">Nombre del ejercicio</label>
+                <input type="text" th:field="*{nombre_ejercicio}" class="form-input"
+                       placeholder="Ej. Sentadillas" maxlength="60"/>
+                <span th:errors="*{nombre_ejercicio}" class="error"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Series</label>
+                    <input type="number" th:field="*{series_ejercicio}" class="form-input"
+                           placeholder="4" min="1" max="24"/>
+                    <span th:errors="*{series_ejercicio}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Repeticiones</label>
+                    <input type="number" th:field="*{repeticiones_ejercicio}" class="form-input"
+                           placeholder="12" min="1" max="100"/>
+                    <span th:errors="*{repeticiones_ejercicio}" class="error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Tiempo (segundos)</label>
+                    <input type="number" th:field="*{tiempo_ejercicio}" class="form-input"
+                           placeholder="0" min="0" max="3600"/>
+                    <span th:errors="*{tiempo_ejercicio}" class="error"></span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descanso (segundos)</label>
+                    <input type="number" th:field="*{descanso_ejercicio}" class="form-input"
+                           placeholder="60" min="0" max="600"/>
+                    <span th:errors="*{descanso_ejercicio}" class="error"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">ID de la rutina</label>
+                <input type="number" th:field="*{fk_id_rutina}" class="form-input"
+                       placeholder="ID de la rutina" min="1"/>
+                <span th:errors="*{fk_id_rutina}" class="error"></span>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/ejercicios}" class="btn-secondary">Cancelar</a>
+                <button type="submit" class="btn-primary"
+                        th:text="${ejerciciosFormu.id_ejercicio != null} ? 'Actualizar ejercicio' : 'Guardar ejercicio'">
+                    Guardar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

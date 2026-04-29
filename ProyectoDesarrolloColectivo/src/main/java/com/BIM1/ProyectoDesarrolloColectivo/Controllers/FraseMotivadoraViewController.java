@@ -19,7 +19,7 @@ public class FraseMotivadoraViewController {
     @GetMapping("/frasesMotivadoras")
     public String mostrarFraseMotivadora(Model model) {
         model.addAttribute("frases", fraseMotivadoraService.getAllFraseMotivadora());
-        return "frasesMotivadoras";
+        return "FraseMotivadora";
     }
 
     @GetMapping("/agregarFrase")

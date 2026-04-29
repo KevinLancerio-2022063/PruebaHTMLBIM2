@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Agregar Apoyo Emocional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Objetivo</title>
     <link rel="stylesheet" th:href="@{/css/Base.css}">
-    <link rel="stylesheet" th:href="@{/css/ApoyoEmocional.css}">
+    <link rel="stylesheet" th:href="@{/css/Objetivos.css}">
 </head>
 <body>
 <nav>
@@ -16,46 +17,50 @@
 
 <div class="page-header">
     <div class="page-header-left">
-        <div class="page-tag">Bienestar personal</div>
-        <h1 class="page-title">Apoyo <em>Emocional</em></h1>
+        <div class="page-tag">Metas personales</div>
+        <h1 class="page-title">Obje<em>tivos</em></h1>
     </div>
 </div>
 
 <div class="detalle-container">
-
     <div class="detalle-card">
-
         <div class="detalle-header">
-            <h1 class="detalle-titulo">Nuevo Apoyo Emocional</h1>
+            <h1 class="detalle-titulo">Agregar Objetivo</h1>
         </div>
 
-        <form th:action="@{/guardarApoyoCreado}" th:object="${apoyo}" method="post" class="apoyo-form">
+        <form th:action="@{/guardarObjetivoCreado}" th:object="${objetivo}" method="post">
             <div class="form-group">
                 <label for="titulo">Título:</label>
-                <input type="text" id="titulo" th:field="*{titulo}" required>
+                <input type="text" id="titulo" th:field="*{tituloObjetivo}" required>
             </div>
             <div class="form-group">
-                <label for="categoria">Categoría:</label>
-                <input type="text" id="categoria" th:field="*{categoria}" required>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" th:field="*{descripcionObjetivo}" required></textarea>
             </div>
             <div class="form-group">
-                <label for="contenido">Contenido:</label>
-                <textarea id="contenido" th:field="*{contenido}" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="nivelAnimo">Nivel de ánimo:</label>
-                <select id="nivelAnimo" th:field="*{nivelAnimo}" required>
-                    <option value="">Seleccionar...</option>
-                    <option value="Mal">Mal</option>
-                    <option value="Bien">Bien</option>
-                    <option value="Mas o menos">Mas o menos</option>
+                <label for="estado">Estado:</label>
+                <select id="estado" th:field="*{estadoObjetivo}" required>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En progreso">En progreso</option>
+                    <option value="Completado">Completado</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="usuario">Usuario ID:</label>
+                <label for="fecha">Fecha del Objetivo:</label>
+                <input type="date" id="fecha" th:field="*{fechaObjetivo}" required>
+            </div>
+            <div class="form-group">
+                <label for="usuario">Usuario:</label>
                 <select id="usuario" th:field="*{usuario}" required>
                     <option value="">Seleccionar...</option>
                     <option th:each="user : ${usuario}" th:value="${user.id_usuario}" th:text="${user.nombre_completo}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fraseMotivadora">Frase motivadora:</label>
+                <select id="fraseMotivadora" th:field="*{fraseMotivadora}" required>
+                    <option value="">Seleccionar...</option>
+                    <option th:each="frase : ${frase}" th:value="${frase.idFraseMotivadora}" th:text="${frase.texto}"></option>
                 </select>
             </div>
             <div class="detalle-footer">
@@ -71,14 +76,10 @@
                     </div>
                     <span class="btn-guardar-text">Guardar</span>
                 </button>
-                <a th:href="@{/apoyoEmocional}" class="btn-secondary">Cancelar</a>
+                <a th:href="@{/objetivos}" class="btn-secondary">Cancelar</a>
             </div>
         </form>
-
     </div>
-
 </div>
-
-
 </body>
 </html>
